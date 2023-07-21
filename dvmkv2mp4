@@ -92,7 +92,7 @@ function processsubs {
         delay=`echo "$i" | cut -f5 -d\|`
         lang=`echo "$i" | cut -f6 -d\|`
         title=`echo "$i" | cut -f7 -d\|`
-        dotnet /opt/PgsToSrt/net6/PgsToSrt.dll --input "$stream" --output "${stream%.sup}.srt" --tesseractlanguage=$lang
+        /opt/dotnet/dotnet /opt/PgsToSrt/net6/PgsToSrt.dll --input "$stream" --output "${stream%.sup}.srt" --tesseractlanguage=$lang
         echo "${stream%.sup}.srt|$id|srt|$orig_codec|$delay|$lang|$title" >> sub.exports
         #docker run --rm -v "`pwd`":/data -e INPUT="/data/$stream" -e OUTPUT="/data/${stream%.sup}.srt" -e LANGUAGE=$lang tentacule/pgstosrt
       done <<< "$(cat sub.exports | grep hdmv_pgs)"
@@ -315,7 +315,7 @@ EOF
       inputbase=${input%.mkv}
       dvmp4sub=`echo ${input%.mkv} | $sed 's/\ DV\|\ HDR10+//g'`
       for i in "$dvmp4sub"\ DV-MP4.*.{srt,sup}; do 
-          eval "cp \"$i\" \"`echo "$i" | $sed 's/\ DV-MP4//g' | $sed \"s/*\.\(.*\)\.\(s..\)/\$inputbase\.\1\.\2/g\"`\"";
+          eval "cp \"$i\" \"`echo "$i" | $sed 's/\ DV-MP4//g' | $sed \"s/.*\.\(.*\)\.\(s..\)/\$inputbase\.\1\.\2/g\"`\"";
       done
       rm BL.hevc *DV-MP4.asm *DV-MP4.*.srt *DV-MP4.sup ${input}.dvconverting
       continue
